@@ -1,44 +1,38 @@
 import { Book, CreateBook } from "../protocols/book";
 import { CreateReview } from "../protocols/review";
-
-import connection from "../database";
+import prisma from "../database";
 
 export async function getBooks() {
-  const query = `SELECT * FROM books`;
-  const result = await connection.query<Book>(query);
-  return result.rows;
+  const books = await prisma.books.findMany();
+  return books;  
 }
 
-export async function getBook(id: number) {
-  const query = `SELECT * FROM books WHERE id = $1`;
-  const result = await connection.query<Book>(query, [id]);
-  return result.rows[0];
+export async function getBook(id: number){
+  const book = await prisma.books.findFirst({where: {id}})
+  return book;
 }
 
-export async function createBook(book: CreateBook) {
-  const { title, author, publisher, purchaseDate } = book;
-  const query = `
-    INSERT INTO books (title, author, publisher, "purchaseDate")
-    VALUES ($1, $2, $3, $4)`;
+export async function createBook(newBook:CreateBook){
+  const book = await prisma.books.create({
+    data: newBook
+  })
 
-  const result = await connection.query(query, [
-    title, author, publisher, purchaseDate
-  ]);
-
-  return result.rowCount;
+  return book;
 }
 
-export async function reviewBook(bookReview: CreateReview) {
-  const { bookId, grade, review } = bookReview;
-  const query = `
-    UPDATE books 
-    SET
-      grade = $1,
-      review = $2,
-      read = true 
-    WHERE id = $3
-  `;
+type GetBookReview = CreateReview & {
+  read: boolean
+};
 
-  const result = await connection.query(query, [grade, review, bookId]);
-  return result.rowCount;
+export async function reviewBook(bookRev: CreateReview):Promise<GetBookReview>{
+  const {grade, review, bookId} = bookRev
+  const bookReview = await prisma.books.update({
+    data: {
+      grade,
+      review,
+      read: true
+    }, 
+    where: {id: bookId}
+  })
+  return {...bookRev, read: bookReview.read };
 }

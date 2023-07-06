@@ -13,5 +13,5 @@ app.get("/health", (req: Request, res: Response) => res.send(httpStatus.OK));
 app.use(bookRouter);
 app.use(errorHandler);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5006;
 app.listen(port, () => console.log(`Server is up and running on port ${port}`));

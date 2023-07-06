@@ -10,3 +10,4 @@ export type Book = {
 };
 
 export type CreateBook = Omit<Book, "id" | "read" | "review" | "grade">;
+
