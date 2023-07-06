@@ -24,7 +24,7 @@ type GetBookReview = CreateReview & {
   read: boolean
 };
 
-export async function reviewBook(bookRev: CreateReview):Promise<GetBookReview>{
+export async function reviewBook(bookRev: CreateReview){
   const {grade, review, bookId} = bookRev
   const bookReview = await prisma.books.update({
     data: {
@@ -34,5 +34,5 @@ export async function reviewBook(bookRev: CreateReview):Promise<GetBookReview>{
     }, 
     where: {id: bookId}
   })
-  return {...bookRev, read: bookReview.read };
+  return bookReview;
 }

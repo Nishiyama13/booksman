@@ -11,6 +11,6 @@ const bookRouter = Router();
 bookRouter.get("/books", controller.getBooks);
 bookRouter.get("/books/:id", controller.getBook);
 bookRouter.post("/books", validateSchema(bookSchema), controller.createBook);
-bookRouter.post("/books/reviews", validateSchema(reviewSchema), controller.reviewBook);
+bookRouter.put("/books/reviews", validateSchema(reviewSchema), controller.reviewBook);
 
 export default bookRouter;
